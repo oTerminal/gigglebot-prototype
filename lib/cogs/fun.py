@@ -30,6 +30,8 @@ import time
 
 from discord.errors import HTTPException
 
+import googletrans
+
 sys.path.append("/Uusi kansio\Lib\site-packages")
 
 
@@ -462,9 +464,16 @@ class Fun(Cog):
 		if isinstance(error, commands.MissingRequiredArgument):
 			await ctx.send("Please add a message.")
 
-	@command(name="translate", aliases=['tr'])
-	async def translate(self, ctx):
-		pass
+	@command(aliases=['tr'])
+	async def translate(ctx, lang_to, *args):
+		lang_to = lang_to.lower()
+		if lang_to not in googletrans.LANGUAGES and lang_to not in googletrans.LANGCODES:
+			raise commands.BadArgument("Invalid language to translate text to")
+
+		text = ' '.join(args)
+		translator = googletrans.Translator()
+		text_translated = translator.translate(text, dest=lang_to).text
+		await ctx.send(text_translated)
 
 
 def setup(bot):
