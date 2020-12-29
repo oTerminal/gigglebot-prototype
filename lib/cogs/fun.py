@@ -110,7 +110,9 @@ class Fun(Cog):
 				await ctx.send(f"API returned a {response.status} status.")
 
 	@command(name="gay")
-	async def gay(self, ctx, *, member: discord.Member):
+	async def gay(self, ctx, *, member: discord.Member=None):
+		if not member:
+			member = ctx.author
 		session = aiohttp.ClientSession()
 		async with session.get(f"https://some-random-api.ml/canvas/gay?avatar={member.avatar_url_as(format='jpg')}") as r:
 			if r.status != 200:
@@ -127,7 +129,9 @@ class Fun(Cog):
 			await ctx.send("Please mention a member to apply the overlay to.")
 
 	@command(name="invert")
-	async def invert(self, ctx, *, member: discord.Member):
+	async def invert(self, ctx, *, member: discord.Member=None):
+		if not member:
+			member = ctx.author
 		session = aiohttp.ClientSession()
 		async with session.get(f"https://some-random-api.ml/canvas/invert?avatar={member.avatar_url_as(format='jpg')}") as r:
 			if r.status != 200:
