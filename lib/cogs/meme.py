@@ -1,14 +1,8 @@
+import aiohttp
+import discord
+from discord.ext.commands import Cog
 from discord.ext.commands import command
 
-import random
-
-from discord.ext.commands import Cog
-
-import discord
-
-from aiohttp import request
-
-import aiohttp
 
 class Meme(Cog):
     def __init__(self, bot):

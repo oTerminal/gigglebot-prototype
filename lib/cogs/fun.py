@@ -1,36 +1,20 @@
-from discord.ext.commands import Cog
-
-from discord.ext.commands import command
-
-from discord.ext import commands
-
+import io
+import json
+import sys
+import time
+import urllib.request
 from random import choice, randint
-
-from discord import Member
-
 from typing import Optional
 
-from aiohttp import request
-
-import datetime
-
-import io
-
-import discord
-
 import aiohttp
-
-import traceback
-
-import sys
-
-import requests
-
-import time
-
-from discord.errors import HTTPException
-
+import discord
 import googletrans
+import requests
+from aiohttp import request
+from discord import Member
+from discord.ext import commands
+from discord.ext.commands import Cog
+from discord.ext.commands import command
 
 sys.path.append("/Uusi kansio\Lib\site-packages")
 
@@ -464,8 +448,8 @@ class Fun(Cog):
 		if isinstance(error, commands.MissingRequiredArgument):
 			await ctx.send("Please add a message.")
 
-	@command(aliases=['tr'])
-	async def translate(ctx, lang_to, *args):
+	@command(name="translate", aliases=['tr'])
+	async def translate(self, ctx, lang_to, *args):
 		lang_to = lang_to.lower()
 		if lang_to not in googletrans.LANGUAGES and lang_to not in googletrans.LANGCODES:
 			raise commands.BadArgument("Invalid language to translate text to")
@@ -474,6 +458,21 @@ class Fun(Cog):
 		translator = googletrans.Translator()
 		text_translated = translator.translate(text, dest=lang_to).text
 		await ctx.send(text_translated)
+
+	@command(name="xchange", aliases=['currency'])
+	async def xchange(self, ctx, newBase="EUR"):
+		currencies=["CAD","HKD","ISK","PHP","DKK","HUF","CZK","AUD","RON","SEK","IDR","INR","BRL","RUB","HRK","JPY","THB","CHF","SGD","PLN","BGN","TRY","CNY","NOK","NZD","ZAR","USD","MXN","ILS","GBP","KRW","MYR"]
+		url="https://api.exchangeratesapi.io/latest"
+		if (newBase in currencies) :
+			url+= "?base=" + newBase
+		req=urllib.request.Request(url)
+		r = urllib.request.urlopen(req).read()
+		cont = json.loads(r.decode('utf-8'))
+		name="1 " +cont["base"] +" equals:"
+		em = discord.Embed(title = name)
+		for item in cont["rates"]:
+			em.add_field(name=item, value=str(cont["rates"][item]), inline=False)
+		await ctx.send(embed = em)
 
 
 def setup(bot):
