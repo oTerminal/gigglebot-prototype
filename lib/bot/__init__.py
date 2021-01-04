@@ -86,8 +86,7 @@ class Bot(BotBase):
         raise
     
     async def on_command_error(self, ctx, exc):
-
-        if any([isinstance(error, exc) for error in IGNORE_EXCEPTIONS]):
+        if any([isinstance(exc, error) for error in IGNORE_EXCEPTIONS]):
             pass
 
         if isinstance(exc, CommandNotFound):
@@ -97,7 +96,7 @@ class Bot(BotBase):
             pass
 
         elif isinstance(exc, MissingRequiredArgument):
-            await ctx.send("1 or more required arguments missing.")
+            pass
 
         elif isinstance(exc.original, HTTPException):
             await ctx.send("Unable to send the message.")
