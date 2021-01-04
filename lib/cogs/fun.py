@@ -33,7 +33,6 @@ class Fun(Cog):
 		dice, value = (int(term) for term in die_string.split("d"))
 		if dice <= 25:
 			rolls = [randint(1, value) for i in range(dice)]
-
 			await ctx.send(" + ".join([str(r) for r in rolls]) + f" = {sum(rolls)}")
 
 		else:
@@ -49,6 +48,11 @@ async def slap_member(self, ctx, member: Member, *, reason: Optional[str] = "no 
 async def slap_error(self, ctx, error):
 	if isinstance(error, commands.MissingRequiredArgument):
 		await ctx.send("Please mention a member you want to slap.")
+
+@slap_member.error
+async def slap_error2(self, ctx, error):
+	if isinstance(error, commands.BadArgument):
+		await ctx.send("I can't find the member mentioned.")
 
 
 @command(name="dog-fact")

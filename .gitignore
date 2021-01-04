@@ -4,4 +4,5 @@ __pycache__
 lib/bot/token.0
 Pipfile
 Pipfile.lock
-.vscode/settings.json
+.vscode
+.spyproject

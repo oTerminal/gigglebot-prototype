@@ -6,13 +6,16 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from discord import Embed
 from discord import Intents
+from discord.errors import HTTPException, Forbidden
 from discord.ext.commands import Bot as BotBase
+from discord.ext.commands import CommandNotFound, BadArgument, MissingRequiredArgument
 
 from ..db import db
 
 PREFIX = "g!"
 OWNER_IDS = [485255323502772255]
 COGS = [path.split("\\")[-1][:-3] for path in glob("./lib/cogs/*.py")]
+IGNORE_EXCEPTIONS = (CommandNotFound, BadArgument, MissingRequiredArgument)
 
 
 class Ready(object):
@@ -26,8 +29,7 @@ class Ready(object):
     def all_ready(self):
         return all([getattr(self, cog) for cog in COGS])
 
-
-           
+   
 class Bot(BotBase):
     def __init__(self):
         self.PREFIX = PREFIX
@@ -59,17 +61,16 @@ class Bot(BotBase):
         super().run(self.TOKEN, reconnect=True)
 
 #    async def process_commands(self, message):
- ##       ctx = await self.get_context(message, cls=Context)
- #       if ctx.command is not None and ctx.guild is not None:
- #           if self.ready:
-  #              await self.invoke(ctx)
+#      ctx = await self.get_context(message, cls=Context)
+#      if ctx.command is not None and ctx.guild is not None:
+#           if self.ready:
+#              await self.invoke(ctx)
 #
 #        else:
- #           await ctx.send("I'm not ready to take commands yet, Please try again in a few seconds.")
+#           await ctx.send("I'm not ready to take commands yet, Please try again in a few seconds.")
 
     async def rules_reminder(self):
         await self.stdout.send("I am a timed notification!")
-
 
     async def on_connect(self):
         print("Bot connected!")
@@ -77,20 +78,39 @@ class Bot(BotBase):
     async def on_disconnect(self):
         print("Bot disconnected!")
 
-    """
+
     async def on_error(self, err, *args, **kwargs):
         if err == "on_command_error":
             await args[0].send("Something went wrong")
         await self.stdout.send("An error occurred")
         raise
+    
     async def on_command_error(self, ctx, exc):
+
+        if any([isinstance(error, exc) for error in IGNORE_EXCEPTIONS]):
+            pass
+
         if isinstance(exc, CommandNotFound):
             pass
+
+        elif isinstance(exc, BadArgument):
+            pass
+
+        elif isinstance(exc, MissingRequiredArgument):
+            await ctx.send("1 or more required arguments missing.")
+
+        elif isinstance(exc.original, HTTPException):
+            await ctx.send("Unable to send the message.")
+
+        elif isinstance(exc.original, Forbidden):
+            await ctx.send("I do not have permissions to do that. ")
+
         elif hasattr(exc, "original"):
             raise exc.original
+        
         else:
-            raise exc
-    """
+            raise exc.original
+
 
     async def on_ready(self):
         if not self.ready:
