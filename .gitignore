@@ -2,7 +2,6 @@
 *.db-journal
 __pycache__
 lib/bot/token.0
-Pipfile
-Pipfile.lock
 .vscode
 .spyproject
+.mypy_cache
