@@ -11,10 +11,11 @@ import discord
 import googletrans
 import requests
 from aiohttp import request
-from discord import Member
+from discord import Member, Embed
 from discord.ext import commands
 from discord.ext.commands import Cog
 from discord.ext.commands import command
+
 
 sys.path.append("/Uusi kansio\Lib\site-packages")
 
@@ -41,7 +42,7 @@ class Fun(Cog):
 
 	@command(name="slap", aliases=['bonk', 'hit'])
 	async def slap_member(self, ctx, member: Member, *, reason: Optional[str] = "no reason"):
-		await ctx.send(f"{ctx.author.mention} slapped {member.mention} for {reason}!")
+		await ctx.send(f"{ctx.author.mention} slapped {member.mention} {reason}!")
 
 
 	@slap_member.error
@@ -55,46 +56,78 @@ class Fun(Cog):
 			await ctx.send("I can't find the member mentioned.")
 
 
-	@command(name="dog-fact")
-	async def dog_fact(self, ctx):
-		URL = "https://some-random-api.ml/facts/dog"
+	# @command(name="dog-fact")
+	# async def dog_fact(self, ctx):
+	# 	URL = "https://some-random-api.ml/facts/dog"
 
-		async with request("GET", URL) as response:
-			if response.status == 200:
-				data = await response.json()
+	# 	async with request("GET", URL) as response:
+	# 		if response.status == 200:
+	# 			data = await response.json()
 
-				await ctx.send(data["fact"])
+	# 			await ctx.send(data["fact"])
 
-			else:
-				await ctx.send(f"API returned a {response.status} status.")
-
-
-	@command(name="cat-fact")
-	async def cat_fact(self, ctx):
-		URL = "https://some-random-api.ml/facts/cat"
-
-		async with request("GET", URL) as response:
-			if response.status == 200:
-				data = await response.json()
-
-				await ctx.send(data["fact"])
-
-			else:
-				await ctx.send(f"API returned a {response.status} status.")
+	# 		else:
+	# 			await ctx.send(f"API returned a {response.status} status.")
 
 
-	@command(name="fox-fact")
-	async def fox_fact(self, ctx):
-		URL = "https://some-random-api.ml/facts/fox"
+	# @command(name="cat-fact")
+	# async def cat_fact(self, ctx):
+	# 	URL = "https://some-random-api.ml/facts/cat"
 
-		async with request("GET", URL) as response:
-			if response.status == 200:
-				data = await response.json()
+	# 	async with request("GET", URL) as response:
+	# 		if response.status == 200:
+	# 			data = await response.json()
 
-				await ctx.send(data["fact"])
+	# 			await ctx.send(data["fact"])
 
-			else:
-				await ctx.send(f"API returned a {response.status} status.")
+	# 		else:
+	# 			await ctx.send(f"API returned a {response.status} status.")
+
+
+	# @command(name="fox-fact")
+	# async def fox_fact(self, ctx):
+	# 	URL = "https://some-random-api.ml/facts/fox"
+
+	# 	async with request("GET", URL) as response:
+	# 		if response.status == 200:
+	# 			data = await response.json()
+
+	# 			await ctx.send(data["fact"])
+
+	# 		else:
+	# 			await ctx.send(f"API returned a {response.status} status.")
+
+	@command(name="fact")
+	async def animal_fact(self, ctx, animal: str):
+		if animal in ("dog", "cat", "koala", "panda", "fox", "bird"):
+			fact_url = f"https://some-random-api.ml/facts/{animal}"
+			image_url = f"https://some-random-api.ml/img/{'birb' if animal == 'bird' else animal}"
+
+			async with request("GET", image_url, headers={}) as response:
+				if response.status == 200:
+					data = await response.json()
+					image_link = data["link"]
+
+				else:
+					image_link = None
+
+			async with request("GET", fact_url, headers={}) as response:
+				if response.status == 200:
+					data = await response.json()
+
+					embed = Embed(title=f"{animal.title()} fact",
+								  description=data['fact'],
+								  color=ctx.author.color)
+
+					if image_link is not None:
+						embed.set_image(url=image_link)
+					await ctx.send(embed=embed)
+
+				else:
+					await ctx.send(f"API returned a {response.status} status.")
+
+		else:
+			await ctx.send("No facts are available for that animal.")
 
 
 	@command(name="dog")
