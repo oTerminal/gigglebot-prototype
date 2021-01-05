@@ -96,7 +96,7 @@ class Bot(BotBase):
             pass
 
         elif isinstance(exc, MissingRequiredArgument):
-            pass
+            await ctx.send("1 or more required arguments are missing.")
 
         elif isinstance(exc.original, HTTPException):
             await ctx.send("Unable to send the message.")
