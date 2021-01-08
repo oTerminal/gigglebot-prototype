@@ -24,7 +24,7 @@ class Fun(Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-	@command(name="Hello", aliases=["hi"])
+	@command(name="hello", aliases=["hi"])
 	async def say_hello(self, ctx):
 		await ctx.send(
 			f"{choice(('Hi', 'Henlo', 'Sup', 'Heyo', 'Hello', 'Hey', 'Hallo', 'Namaste', 'Hiya', 'Wassah'))} {ctx.author.mention}!")
