@@ -1,14 +1,16 @@
 from asyncio import sleep
 from datetime import datetime
 from glob import glob
+import traceback
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from discord import Embed
 from discord import Intents
+from discord.ext import commands
 from discord.errors import HTTPException, Forbidden
 from discord.ext.commands import Bot as BotBase
-from discord.ext.commands import CommandNotFound, BadArgument, MissingRequiredArgument
+from discord.ext.commands import CommandNotFound, BadArgument, MissingRequiredArgument, command
 
 from ..db import db
 
@@ -123,7 +125,7 @@ class Bot(BotBase):
 
             embed = Embed(title="Now online!", description="Better bot is online lmfao ( ͡° ͜ʖ ͡°)", color=0x00FFFF, 
                           timestamp=datetime.utcnow())
-            fields = [("Help command", ",help", True),
+            fields = [("Help command", "g!help", True),
                      ("Another field", "This field is next to the another one", True),
                      ("A non-inline field", "This field will appear on it's own row", False)]
             for name, value, inline in fields:
