@@ -11,10 +11,10 @@ import discord
 import googletrans
 import requests
 from aiohttp import request
-from discord import Member, Embed
+from discord import Member, Embed	
 from discord.ext import commands
-from discord.ext.commands import Cog
-from discord.ext.commands import command
+from discord.ext.commands import Cog, BucketType
+from discord.ext.commands import command, cooldown
 
 
 sys.path.append("/Uusi kansio\Lib\site-packages")
@@ -30,17 +30,18 @@ class Fun(Cog):
 			f"{choice(('Hi', 'Henlo', 'Sup', 'Heyo', 'Hello', 'Hey', 'Hallo', 'Namaste', 'Hiya', 'Wassah'))} {ctx.author.mention}!")
 
 	@command(name="dice", aliases=["roll"])
+	@cooldown(1, 5, BucketType.user)
 	async def roll_dice(self, ctx, die_string: str):
 		dice, value = (int(term) for term in die_string.split("d"))
 		if dice <= 25:
 			rolls = [randint(1, value) for i in range(dice)]
 			await ctx.send(" + ".join([str(r) for r in rolls]) + f" = {sum(rolls)}")
-
 		else:
 			await ctx.send("I can't roll that many dices, please try a lower number.")
 
 
 	@command(name="slap", aliases=['bonk', 'hit'])
+	@cooldown(3, 10, BucketType.user)
 	async def slap_member(self, ctx, member: Member, *, reason: Optional[str] = "no reason"):
 		await ctx.send(f"{ctx.author.mention} slapped {member.mention} {reason}!")
 
@@ -145,6 +146,7 @@ class Fun(Cog):
 
 
 	@command(name="gay")
+	@cooldown(1, 5, BucketType.user)
 	async def gay(self, ctx, *, member: discord.Member = None):
 		if not member:
 			member = ctx.author
@@ -166,6 +168,7 @@ class Fun(Cog):
 
 
 	@command(name="invert")
+	@cooldown(1, 5, BucketType.user)
 	async def invert(self, ctx, *, member: discord.Member = None):
 		if not member:
 			member = ctx.author
@@ -200,8 +203,7 @@ class Fun(Cog):
 				await ctx.send(f"API returned a {response.status} status.")
 
 
-	# weather
-	# api = http://api.openweathermap.org/data/2.5/weather?q=Helsinki&appid=ad8c24a502acf15769ead04a4966132b&units=metric
+
 	@command(name="weather")
 	async def weather(self, ctx, inputC):
 		countr = {
@@ -483,12 +485,6 @@ class Fun(Cog):
 		await ctx.send(embed=em)
 
 
-	@weather.error
-	async def weather_handler(self, ctx, error):
-		if isinstance(error, commands.MissingRequiredArgument):
-			await ctx.send("Please mention a country/place you want the weather for.")
-
-
 	@Cog.listener()
 	async def on_ready(self):
 		print("Fun cog ready!")
@@ -508,6 +504,7 @@ class Fun(Cog):
 
 
 	@command(name="translate", aliases=['tr'])
+	@cooldown(3, 5, BucketType.user)
 	async def translate(self, ctx, lang_to, *args):
 		lang_to = lang_to.lower()
 		if lang_to not in googletrans.LANGUAGES and lang_to not in googletrans.LANGCODES:
@@ -520,6 +517,7 @@ class Fun(Cog):
 
 
 	@command(name="xchange", aliases=['currency'])
+	@cooldown(3, 5, BucketType.user)
 	async def xchange(self, ctx, newBase="EUR"):
 		currencies = ["CAD", "HKD", "ISK", "PHP", "DKK", "HUF", "CZK", "AUD", "RON", "SEK", "IDR", "INR", "BRL", "RUB",
 					"HRK", "JPY", "THB", "CHF", "SGD", "PLN", "BGN", "TRY", "CNY", "NOK", "NZD", "ZAR", "USD", "MXN",

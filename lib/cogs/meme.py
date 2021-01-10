@@ -1,7 +1,7 @@
 import aiohttp
 import discord
 from discord.ext.commands import Cog
-from discord.ext.commands import command
+from discord.ext.commands import command, BucketType, cooldown
 
 
 class Meme(Cog):
@@ -9,6 +9,7 @@ class Meme(Cog):
         self.bot = bot
 
     @command(name="meme")
+    @cooldown(8, 10, BucketType.user)
     async def meme(self, ctx):
         async with aiohttp.ClientSession() as cs:
             async with cs.get('https://meme-api.herokuapp.com/gimme/memes') as r:

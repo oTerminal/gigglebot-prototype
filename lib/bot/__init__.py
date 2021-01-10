@@ -10,7 +10,7 @@ from discord import Intents
 from discord.ext import commands
 from discord.errors import HTTPException, Forbidden
 from discord.ext.commands import Bot as BotBase
-from discord.ext.commands import CommandNotFound, BadArgument, MissingRequiredArgument, command
+from discord.ext.commands import CommandNotFound, BadArgument, MissingRequiredArgument, CommandOnCooldown
 
 from ..db import db
 
@@ -100,8 +100,11 @@ class Bot(BotBase):
         elif isinstance(exc, MissingRequiredArgument):
             await ctx.send("1 or more required arguments are missing.")
 
-        elif isinstance(exc.original, HTTPException):
-            await ctx.send("Unable to send the message.")
+        elif isinstance(exc, CommandOnCooldown):
+            await ctx.send(f"That command is on cooldown, try again in {exc.retry_after:,.2f} seconds.")
+
+        # elif isinstance(exc.original, HTTPException):
+        #     await ctx.send("Unable to send the message.")
 
         elif isinstance(exc.original, Forbidden):
             await ctx.send("I do not have permissions to do that. ")
