@@ -1,10 +1,12 @@
 from discord.ext import commands
-from discord.ext.commands import Cog
+from discord.ext.commands import Cog, has_permissions, command, CheckFailure
 import discord
 import os
 import traceback
 import asyncio
 from datetime import datetime
+
+from ..db import db
 
 # Ping command for the bot.
 
@@ -204,6 +206,16 @@ class Config(Cog):
 		embed.add_field(name="Discord.py version", value="`1.6.0`")
 		embed.set_footer(text=ctx.message.author, icon_url=ctx.guild.icon_url)
 		await ctx.send(embed=embed)
+
+	@command(name="prefix")
+	@has_permissions(manage_guild=True)
+	async def change_prefix(self, ctx, new: str):
+		if len(new) > 5:
+			await ctx.send("The prefix can not be longer than 5 characters in length. ")
+
+		else:
+			db.execute("UPDATE guilds SET Prefix = ? WHERE GuildID = ?", new, ctx.guild.id)
+			await ctx.send(f"Prefix set to {new}")
 
 def setup(bot):
 	bot.add_cog(Config(bot))

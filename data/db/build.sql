@@ -1,3 +1,8 @@
+CREATE TABLE IF NOT EXISTS guilds (
+    GUILDID integer PRIMARY_KEY,
+    Prefix text DEFAULT "g!"
+);
+
 CREATE TABLE IF NOT EXISTS exp (
     UserID integer PRIMARY KEY,
     XP integer DEFAULT 0,

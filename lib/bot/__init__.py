@@ -11,14 +11,19 @@ from discord.ext import commands
 from discord.errors import HTTPException, Forbidden
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import CommandNotFound, BadArgument, MissingRequiredArgument, CommandOnCooldown
+from discord.ext.commands import when_mentioned_or
 
 from ..db import db
 
-PREFIX = "g!"
+# PREFIX = "g!"
 OWNER_IDS = [485255323502772255]
 COGS = [path.split("\\")[-1][:-3] for path in glob("./lib/cogs/*.py")]
 IGNORE_EXCEPTIONS = (CommandNotFound, BadArgument, MissingRequiredArgument)
 
+
+def get_prefix(bot, message):
+    prefix = db.field("SELECT Prefix FROM guilds WHERE GuildID = ?", message.guild.id)
+    return when_mentioned_or(prefix)(bot, message)
 
 class Ready(object):
     def __init__(self):
@@ -34,14 +39,14 @@ class Ready(object):
    
 class Bot(BotBase):
     def __init__(self):
-        self.PREFIX = PREFIX
+#        self.PREFIX = PREFIX
         self.ready = False
         self.cogs_ready = Ready()
         self.guild = self.get_guild
         self.scheduler = AsyncIOScheduler()
 
         db.autosave(self.scheduler)
-        super().__init__(command_prefix=PREFIX, owner_ids=OWNER_IDS, intents=Intents.all())
+        super().__init__(command_prefix=get_prefix, owner_ids=OWNER_IDS, intents=Intents.all())
 
     def setup(self):
         for cog in COGS:
@@ -74,12 +79,12 @@ class Bot(BotBase):
     async def rules_reminder(self):
         await self.stdout.send("I am a timed notification!")
 
+
     async def on_connect(self):
         print("Bot connected!")
 
     async def on_disconnect(self):
         print("Bot disconnected!")
-
 
     async def on_error(self, err, *args, **kwargs):
         if err == "on_command_error":
