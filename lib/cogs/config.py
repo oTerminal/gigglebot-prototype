@@ -4,6 +4,7 @@ import discord
 import os
 import traceback
 import asyncio
+from datetime import datetime
 
 # Ping command for the bot.
 
@@ -45,7 +46,7 @@ class Config(Cog):
 		else:
 			async with ctx.typing():
 				embed = discord.Embed(
-					title="Reloading all cogs!",
+					title="Reloading cog!",
 					color=0x808080,
 					timestamp=ctx.message.created_at
 				)
@@ -194,9 +195,14 @@ class Config(Cog):
 
 	@commands.command(name="info", description="Display's info about the bot!")
 	async def info(self, ctx):
-		embed = discord.Embed(name="Bot info!",
-							  description="Some info about the bot is present here :D")
-		embed.add_field(name="Owner", description="CrazyVibes07#3156")
+		embed = discord.Embed(title="Bot info!",
+							  description="Some info about the bot is present here :D",
+							  color=ctx.author.color,
+							  timestamp=datetime.utcnow())
+		embed.add_field(name="Owner", value="`CrazyVibes07#3156`" + "\n" "`ID=485255323502772255`", inline=True)
+		embed.add_field(name="Python version", value="`3.8.5`")
+		embed.add_field(name="Discord.py version", value="`1.6.0`")
+		embed.set_footer(text=ctx.message.author, icon_url=ctx.guild.icon_url)
 		await ctx.send(embed=embed)
 
 def setup(bot):
