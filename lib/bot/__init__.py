@@ -1,6 +1,7 @@
 from asyncio import sleep
 from datetime import datetime
 from glob import glob
+from pathlib import Path
 import traceback
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -17,7 +18,7 @@ from ..db import db
 
 # PREFIX = "g!"
 OWNER_IDS = [485255323502772255]
-COGS = [path.split("\\")[-1][:-3] for path in glob("./lib/cogs/*.py")]
+COGS = [p.stem for p in Path(".").glob("./lib/cogs/*.py")]
 IGNORE_EXCEPTIONS = (CommandNotFound, BadArgument, MissingRequiredArgument)
 
 

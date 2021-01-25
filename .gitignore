@@ -3,6 +3,6 @@
 __pycache__
 lib/bot/token.0
 .vscode
-.spyproject
 .mypy_cache
-bot_notes.txt
+Pipfile
+Pipfile.lock
