@@ -1,0 +1,6 @@
+discord.py
+wavelink
+googletrans
+requests
+aiosqlite
+git+https://github.com/Rapptz/discord-ext-menus
