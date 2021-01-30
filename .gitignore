@@ -6,3 +6,4 @@ lib/bot/token.0
 .mypy_cache
 Pipfile
 Pipfile.lock
+openjdk-13.0.2_linux-x64_bin

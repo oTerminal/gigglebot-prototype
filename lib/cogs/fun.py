@@ -11,7 +11,7 @@ import discord
 import googletrans
 import requests
 from aiohttp import request
-from discord import Member, Embed	
+from discord import Member, Embed
 from discord.ext import commands
 from discord.ext.commands import Cog, BucketType
 from discord.ext.commands import command, cooldown
